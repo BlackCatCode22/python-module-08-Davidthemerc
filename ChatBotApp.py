@@ -9,6 +9,9 @@ from my_api import client
 # Import streamlit
 import streamlit as st
 
+# Import time
+import time
+
 class ChatBot:
     def __init__(self, system_prompt):
         self.client = client
@@ -55,14 +58,25 @@ def main():
     st.title("Dark Wizard")
     st.write("*Greetings, seeker of knowledge. How may I assist you today?*")
 
-    # Create a form for user input
     with st.form(key="chat_form", clear_on_submit=True):
         user_input = st.text_input("Ask the Dark Wizard:", key="user_input")
         submit_button = st.form_submit_button(label="Send")
 
     if submit_button and user_input:
+        # Create a placeholder for the "typing" animation
+        typing_placeholder = st.empty()
+
+        # Animate "Typing..." with dots
+        for i in range(6):  # Adjust the number of cycles if you want
+            dots = "." * (i % 4)  # Cycle through '', '.', '..', '...'
+            typing_placeholder.write(f"*Dark Wizard is typing{dots}*")
+            time.sleep(0.25)  # Quarter second between each update
+
+        # Get the real response after animation
         response = st.session_state.bot.get_response(user_input)
-        st.write(f"Dark Wizard Bot: {response}")
+
+        # Replace "Typing..." with the actual bot response
+        typing_placeholder.markdown(f"*{response}*")
 
 if __name__ == "__main__":
     main()

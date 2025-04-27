@@ -76,7 +76,7 @@ def main():
         response = st.session_state.bot.get_response(user_input)
 
         # Replace "Typing..." with the actual bot response
-        typing_placeholder.markdown(f"*{response}*")
+        typing_placeholder.markdown(f"<i>{response}</i>", unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()

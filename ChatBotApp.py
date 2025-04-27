@@ -6,6 +6,9 @@ from openai import OpenAI
 # Import api key
 from my_api import client
 
+# Import streamlit
+import streamlit as st
+
 class ChatBot:
     def __init__(self, system_prompt):
         self.client = client
@@ -37,29 +40,29 @@ class ChatBot:
             return assistant_message
 
         except Exception as e:
-            print(f"Error generating response: {str(e)}")
+            st.write(f"Error generating response: {str(e)}")
             return "I apologize, but I encountered an error while processing your request."
 
 
 def main():
-    # Initialize the Dark Wizard bot with a system prompt
-    system_prompt = """You are a Dark Wizard from the world of RuneScape who helps people with their problems 
-    while maintaining a mysterious and slightly ominous persona."""
+    # Initialize or load bot and conversation history
+    if "bot" not in st.session_state:
 
-    bot = ChatBot(system_prompt)
+        system_prompt = """You are a Dark Wizard from the world of RuneScape who helps people with their problems 
+        while maintaining a mysterious and slightly ominous persona."""
+        st.session_state.bot = ChatBot(system_prompt)
 
-    print("Dark Wizard Bot: Greetings, seeker of knowledge. How may I assist you today?")
+    st.title("Dark Wizard")
+    st.write("*Greetings, seeker of knowledge. How may I assist you today?*")
 
-    while True:
-        user_input = input("Ask the Dark Wizard: ")
+    # Create a form for user input
+    with st.form(key="chat_form", clear_on_submit=True):
+        user_input = st.text_input("Ask the Dark Wizard:", key="user_input")
+        submit_button = st.form_submit_button(label="Send")
 
-        if user_input.lower() in ['quit', 'exit', 'bye']:
-            print("Dark Wizard Bot: Farewell, mortal...")
-            break
-
-        response = bot.get_response(user_input)
-        print(f"Dark Wizard Bot: {response}")
-
+    if submit_button and user_input:
+        response = st.session_state.bot.get_response(user_input)
+        st.write(f"Dark Wizard Bot: {response}")
 
 if __name__ == "__main__":
     main()
